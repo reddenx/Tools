@@ -60,6 +60,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DynamicApiTesting.cs" />
     <Compile Include="FogBugzProxyTesting.cs" />
     <Compile Include="FogbugzTests.cs" />
     <Compile Include="MouseInputTesting.cs" />
@@ -70,6 +71,7 @@
     <Compile Include="TcpDataConnectionTesting.cs" />
     <Compile Include="TcpNetworkConnectionTests.cs" />
     <Compile Include="TcpSelfConnectionLifecycleTests.cs" />
+    <Compile Include="TypeGenerationTesting.cs" />
     <Compile Include="UdpConsoleFeedbackListener.cs" />
     <Compile Include="UdpTesting.cs" />
   </ItemGroup>
@@ -87,6 +89,14 @@
       <Project>{906aa950-a547-4061-a64a-2a5181b01fed}</Project>
       <Name>SMT.Utilities.Configuration</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SMT.Utilities.DynamicApi.Client\SMT.Utilities.DynamicApi.Client.csproj">
+      <Project>{2eb17b30-a88a-4b75-8312-2ad0d81f5583}</Project>
+      <Name>SMT.Utilities.DynamicApi.Client</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SMT.Utilities.DynamicApi.Dto\SMT.Utilities.DynamicApi.Dto.csproj">
+      <Project>{f9df3743-4bd7-4fae-ba2b-a8d291ee1544}</Project>
+      <Name>SMT.Utilities.DynamicApi.Dto</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SMT.Utilities.FogBugz\SMT.Utilities.FogBugz.csproj">
       <Project>{156009ef-e188-4505-8bfa-822c2ee22e64}</Project>
       <Name>SMT.Utilities.FogBugz</Name>
@@ -94,6 +104,10 @@
     <ProjectReference Include="..\SMT.Utilities.InputEvents\SMT.Utilities.InputEvents.csproj">
       <Project>{b74d090f-0c31-4f12-8dec-4768009bd833}</Project>
       <Name>SMT.Utilities.InputEvents</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SMT.Utilities.Reflection\SMT.Utilities.Reflection.csproj">
+      <Project>{1f326986-a2a3-40ee-9376-832f05851c43}</Project>
+      <Name>SMT.Utilities.Reflection</Name>
     </ProjectReference>
     <ProjectReference Include="..\SMT.Utilities.Sql\SMT.Utilities.Sql.csproj">
       <Project>{897b5ec0-2fde-46df-9d62-c4a92661d18a}</Project>
