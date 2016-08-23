@@ -13,13 +13,13 @@ namespace App.TestingGrounds
     {
         public static void Run()
         {
-            var typeFactory = new TypeFactory("SomeClassTest", typeof(TestClass), new[] { typeof(ITestInterface) });
+			var typeFactory = new TypeFactory("SomeClassTest", typeof(TestClass), new[] { typeof(ITestInterface) }, Assembly.GetCallingAssembly());
             typeFactory.AppendMethod<Func<string, string, string>>("Derp",
-                (s, s2) => s + " and " + s2
+                (s, s2) => s + " and " + s2, null
             );
 
             typeFactory.OverrideMethod<Action>("SomeMethod", typeof(ITestInterface), "SomeMethod",
-                () => Console.WriteLine("derp"));
+                () => Console.WriteLine("derp"), null);
 
             var type = typeFactory.Generate();
 

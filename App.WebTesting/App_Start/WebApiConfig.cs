@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
+using System.Web;
+using System.IO;
 
 namespace App.WebTesting
 {
@@ -10,7 +12,7 @@ namespace App.WebTesting
     {
         public static void Register(HttpConfiguration config)
         {
-            var routes = DynamicApiBaseController.GetRoutes("derp");
+            var routes = DynamicApiAssembler.GetRoutes("derp");
             foreach (var route in routes)
             {
                 config.Routes.MapHttpRoute(
@@ -18,6 +20,10 @@ namespace App.WebTesting
                     routeTemplate: route.Template,
                     defaults: route.Defaults);
             }
+
+			config.Routes.MapHttpRoute(
+				name: "derprefgretg",
+				routeTemplate: "api/{controller}/{action}");
         }
     }
 }

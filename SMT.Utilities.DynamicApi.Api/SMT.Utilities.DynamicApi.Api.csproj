@@ -49,6 +49,10 @@
       <Project>{f9df3743-4bd7-4fae-ba2b-a8d291ee1544}</Project>
       <Name>SMT.Utilities.DynamicApi.Dto</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SMT.Utilities.Reflection\SMT.Utilities.Reflection.csproj">
+      <Project>{1f326986-a2a3-40ee-9376-832f05851c43}</Project>
+      <Name>SMT.Utilities.Reflection</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -6,13 +6,14 @@ using System.Web.Http;
 
 namespace App.WebTesting.Controllers
 {
-    public class DynamicApiBaseController : ApiController
+    public class RouringBaseController : ApiController
     {
-		public object RunDynamic()
+		public string RunDynamic()
         {
-            return SMT.Utilities.DynamicApi.Api.DynamicApiBaseController.RunDynamic(
-                HttpContext.Current.Request.RequestContext.RouteData.Values,
-                this.Request.Content.ReadAsStringAsync().Result);
+			throw new NotImplementedException();
+            //return SMT.Utilities.DynamicApi.Api.DynamicApiBaseController.RunDynamic(
+            //    HttpContext.Current.Request.RequestContext.RouteData.Values,
+            //    this.Request.Content.ReadAsStringAsync().Result);
         }
     }
 }

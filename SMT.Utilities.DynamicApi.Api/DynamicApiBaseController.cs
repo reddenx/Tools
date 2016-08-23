@@ -7,17 +7,31 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using SMT.Utilities.DynamicApi.Dto;
+using SMT.Utilities.Reflection;
 
 namespace SMT.Utilities.DynamicApi.Api
 {
 	/// <summary>
 	/// Acts as a controller for all dynamically generated Apis, It does internal routing to ensure methods are routed to the correct api
 	/// </summary>
-	public class DynamicApiBaseController//: ApiController
+	public class DynamicApiAssembler//: ApiController
 	{
 		private static Type[] DynamicApis;
+		private static Func<IDictionary<string, object>> GetRouteData;
+		private static Func<string> GetRequestBody;
 
 		//server side: given the interface and implementation of the object that is proxied, build out a controller that calls into this object
+
+		public static Type SetupTypes(Func<IDictionary<string, object>> getRouteData, Func<string> getRequestBody, Type postAttributeType, Type controllerType, Type[] interfaces, Assembly inputAssembly)
+		{
+			GetRouteData = getRouteData;
+			GetRequestBody = getRequestBody;
+
+			var typeFactory = new TypeFactory("DynamicApiBaseController", controllerType, interfaces, inputAssembly);
+
+			typeFactory.AppendMethod<Func<object>>("RunDynamic", () => RunDynamic(), new Type[] { postAttributeType });
+			return typeFactory.Generate();
+		}
 
 		/// <summary>
 		/// Must be called during webapi configuration setup
@@ -30,7 +44,7 @@ namespace SMT.Utilities.DynamicApi.Api
 			var dynamicApis = Assembly.GetCallingAssembly().GetTypes()
 				.Where(type => type.GetInterfaces().Any(i => i.GetCustomAttribute(typeof(DynamicApiAttribute)) != null));
 
-            var routes = new List<RouteDefinition>();
+			var routes = new List<RouteDefinition>();
 			//gte all implementors of that attribute and register them
 			foreach (var api in dynamicApis)
 			{
@@ -39,39 +53,42 @@ namespace SMT.Utilities.DynamicApi.Api
 				var template = prefix + "/{DynamicObject}/{DestinationMethod}";
 
 				routes.Add(new RouteDefinition()
-                {
-                    Name = route,
-                    Template = template,
-                    Defaults = new { controller = "DynamicApiBase", action = "RunDynamic" }
-                });
+				{
+					Name = route,
+					Template = template,
+					Defaults = new { controller = "DynamicApiBase", action = "RunDynamic" }
+				});
 			}
 
-            DynamicApis = dynamicApis.ToArray();
-            return routes.ToArray();
+			DynamicApis = dynamicApis.ToArray();
+			return routes.ToArray();
 		}
 
 		/// <summary>
 		/// Not meant to be called directly, this is the entry point for all incoming api calls from the WebApi framework.
 		/// </summary>
 		/// <returns></returns>
-		public static object RunDynamic(IDictionary<string, object> routeData, string requestBody)
+		public static object RunDynamic()// IDictionary<string, object> routeData, string requestBody)
 		{
+			var routeData = GetRouteData();
+			var requestBody = GetRequestBody();
+
 			//build up routing information since this is the generic input for everything
-            var destObjName = routeData["DynamicObject"] as string;
-            var destMethod = routeData["DestinationMethod"] as string;
+			var destObjName = routeData["DynamicObject"] as string;
+			var destMethod = routeData["DestinationMethod"] as string;
 
 
 			if (destObjName == null || destMethod == null)
 			{
-                throw new System.Net.WebException("Not found");// Exception(HttpStatusCode.NotFound);
+				throw new System.Net.WebException("Not found");// Exception(HttpStatusCode.NotFound);
 			}
 
 			var destObjType = DynamicApis.SingleOrDefault(type => (type.GetInterfaces().First(i => i.GetCustomAttribute(typeof(DynamicApiAttribute)) != null).GetCustomAttribute(typeof(DynamicApiAttribute)) as DynamicApiAttribute).RouteName == destObjName);
 
 			if (destObjType == null)
 			{
-                throw new System.Net.WebException("Not found");// Exception(HttpStatusCode.NotFound);
-                //throw new HttpResponseException(HttpStatusCode.NotFound);
+				throw new System.Net.WebException("Not found");// Exception(HttpStatusCode.NotFound);
+															   //throw new HttpResponseException(HttpStatusCode.NotFound);
 			}
 
 			var destObj = Activator.CreateInstance(destObjType);
